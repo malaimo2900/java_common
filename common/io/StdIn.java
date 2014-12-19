@@ -13,7 +13,7 @@ public class StdIn {
 	}
 	
 	public byte[] readByesAt(int length) throws IOException {
-		byte[] b = new byte[length+1];
+		byte[] b = new byte[length];
 		
 		if (this.buffer.read(b, 0, length) == -1) {
 			throw new BufferOverflowException();
@@ -26,7 +26,7 @@ public class StdIn {
 		
 		try {
 			byte[] b = this.readByesAt(1);
-			s = new String(b, this.CHARSET).trim();			
+			s = new String(b, this.CHARSET);			
 		} catch(IOException ioe) {
 			System.out.println("Unable to read characters");
 			s = null;
