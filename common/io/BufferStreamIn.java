@@ -1,26 +1,45 @@
 package common.io;
 
 import java.io.*;
-import java.nio.BufferOverflowException;
 
 
-public class StdIn {
+public class BufferStreamIn {
 	private BufferedInputStream buffer;
+	private static BufferStreamIn instance;
 	
-	public StdIn()  {
+	/// Ensure that a static input stream methd is used to create the object
+	private BufferStreamIn() { }
+	
+	private static BufferStreamIn obj() {
+		if (!(BufferStreamIn.instance instanceof BufferStreamIn)) {
+			BufferStreamIn.instance = new BufferStreamIn();
+		}
+		
+		return BufferStreamIn.instance;
+	}
+	
+	private BufferStreamIn createBuffer(InputStream in)  {
 		try {
-			this.buffer = new BufferedInputStream(System.in);
+			this.buffer = new BufferedInputStream(in);
 		} catch (IllegalArgumentException iae) {
 			System.out.println("Standard input failed to initialize BufferedInputStream.");
 		}
+		
+		return this;
+	}
+	
+	public static BufferStreamIn createStreamStdIn() {
+		return BufferStreamIn.obj().createBuffer(System.in);
 	}
 	
 	public byte[] readNumBytes(int length) {
-		byte[] b = new byte[length];
+		byte[] b;
 		
 		try {
+			b = new byte[length];
 			this.buffer.read(b, 0, length);
 		} catch (IOException ioe) {
+			b = null;
 			System.out.println("Unable to read bytes");
 		}
 		
