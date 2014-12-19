@@ -6,32 +6,29 @@ import java.nio.BufferOverflowException;
 
 public class StdIn {
 	private BufferedInputStream buffer;
-	private final String CHARSET = "UTF-8";
 	
-	public StdIn() throws IllegalArgumentException {
-		this.buffer = new BufferedInputStream(System.in);
+	public StdIn()  {
+		try {
+			this.buffer = new BufferedInputStream(System.in);
+		} catch (IllegalArgumentException iae) {
+			System.out.println("Standard input failed to initialize BufferedInputStream.");
+		}
 	}
 	
-	public byte[] readByesAt(int length) throws IOException {
+	public byte[] readNumBytes(int length) {
 		byte[] b = new byte[length];
 		
-		if (this.buffer.read(b, 0, length) == -1) {
-			throw new BufferOverflowException();
+		try {
+			this.buffer.read(b, 0, length);
+		} catch (IOException ioe) {
+			System.out.println("Unable to read bytes");
 		}
+		
 		return b;
 	}
 	
 	public String readNextChar() {
-		String s;
-		
-		try {
-			byte[] b = this.readByesAt(1);
-			s = new String(b, this.CHARSET);			
-		} catch(IOException ioe) {
-			System.out.println("Unable to read characters");
-			s = null;
-		}
-		return s;
+		return new String(this.readNumBytes(1));
 	}
 	
 	public boolean isEmpty() {
